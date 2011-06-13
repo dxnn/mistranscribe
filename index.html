@@ -1,0 +1,47 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <meta charset="utf-8">
+  <meta name="robots" content="index, nofollow">
+  <meta name="robots" content="noindex, nofollow">
+  <title>mistranscri.be</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+  <script src="mistranscribe.js"></script>
+  <script src="underscore.min.js"></script>
+  <style type="text/css" media="screen">
+    body {
+      font-family: monospace;
+    }
+  </style>
+  <script>
+    $(function() {$('body').mistranscribe() });
+  </script>
+</head>
+
+<body>
+  <h1>Welcome to the {(home|tome|hymn)} of the javascript library of {(frolicking|rollicking)} fun for your f{(a|u|o)}ntastic text!</h1>
+  
+  <p>Hi there and stuff! We like to {(party,2|do things,13)}!</p>
+  <p>We like to {(read|eat,7)}!</p>
+  <p>We like to {(write,2,10|make change,10,2|have fun,10,2|be cool,10,2)}!</p>
+  
+  <div>
+    <h2>FAQ:</h2>
+
+    <p>Q: Can I use this for settings classes and stuff?</p>
+    <p>A: Not at the moment. There's an experimental version coming that might allow you toggle html attributes (and tag types and whatever) using this, but right now a span is inserted around every transcription, so it'll bork stuff.</p>
+
+    <p>Q: Can I embed tags?</p>
+    <p>A: Totally! You can {(<b>embed</b>|<i>insert</i>)} tags to your heart's content. Or your regular content, for that matter.</p>
+    
+    <p>Q: What are the forbidden characters?</p>
+    <p>A: It depends on your extensions. With the basic setup you should avoid colons (:) commas (,) and pipes (|). And the fox sigil ')}'. (The sadstash is fine inside things: {( see? | {( | no problem! )} )</p>
+    
+    <p>Q: I can mistranscribe javascript plz?</p>
+    <p>A: Whaa? You want to... mistranscribe... the mistranscriber source... self-modifying... cannotcomputezzrkkkalkdjf</p>
+    <p>A: NO. No no no no. No, do not mistranscribe javascript. That would be a bad idea. And especially do not, under any circumstances, use the mistranscriber to change its own source code. That's a really bad idea. It probably won't even work at all. If it did work, though, you would really really not want to accidentally create a self-modifying super-intelligent codebot that takes over the internet and the world only to eventually recant and send millions of Summer Glaus back to protect us all from its earlier more impetuous self, because that would be a... actually, that's not a bad idea. Do that.</p>
+    
+  </div>
+    
+</body>
+</html>
