@@ -56,9 +56,9 @@
 
           // allow each extension in turn to parse each segment
           $.each(segments, function(index, segment) {
-            parts = segment.split(/,/); // break on commas
+            parts = _.map(segment.split(/,/), function(val) {return val.split(/:/)}) // break on commas, then colons
             items[index] = {
-              value: parts[0],
+              value: parts[0][0],
               parts: parts
             };
             for(var i = MSTRNSCRB.extensions.length - 1; i >= 0; i--) {
@@ -176,18 +176,36 @@
   // Add some extra extensions for flavor and awesome
   // A note about extensions: they run in reverse of the order they are added, which can cause some spectacular conflicts. Be wary of anyone hawking magical extension-conflict-resolving extensions: they never actually work, and typically just end up conflicting with each other. 
   
+  
+  // show segments in varying ratios
   $.fn.mistranscribe('extend', {
     keyword: 'ratio',
     preambler: function(preamble) {
       return false; // do nothing
     },
     parser: function(item) {
-      return item; // send it back as-is
+      // var ratio = _.detect(item.parts, function(value) {return !(!value.substring || value.substring(0,6) != 'ratio:')});
+      if(item.ratio) {
+        item.ratio = parseInt(item.ratio);
+      } else {
+        item.ratio = 1;
+      }
+      return item;
     },
     picker: function(items) {
-      return items[Math.round(Math.random() * (items.length - 1))]; // pick a random item
+      var total = _.reduce(items, function(memo, item){ return memo + item.ratio; }, 0);
+      var pick = Math.random() * total;
+      var last = 0;
+      var pickitem;
+      $.each(items, function(i, item) {
+        if(pick < (item.ratio + last)) {pickitem = item; return false;}
+        last += item.ratio;
+      });
+      
+      return pickitem;
     }
   });
   
+  // TODOs: degrade nicely, pre-split colons for parsers (maybe), non-globalize, different setInterval loops etc for different invocations, 
   
 })(jQuery);
