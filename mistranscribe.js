@@ -44,26 +44,43 @@
           newhtml += chunks[1]; // put the regular stuff back in place
           var segments = chunks[2].substring(2,chunks[2].length - 2).split(new RegExp(settings.splitchars)); // split fancy stuff on pipes
           var items = [];
+          
+          // if there's an empty segment after the first one, and more segments after that, that first one is a preamble
+          // ex. {(name:neato,linear,once||so|soo|sooo|soooo)}
+          if(segments.length > 2 && segments[0] && !segments[1]) {
+            preamble = segments[0].split(/,/); // break on commas
+            for (var i = MSTRNSCRB.extensions.length - 1; i >= 0; i--){
+              MSTRNSCRB.extensions[i].preambler(preamble);
+            };
+          }
 
-          // split up each segment
+          // allow each extension in turn to parse each segment
           $.each(segments, function(index, segment) {
-            var sections = segment.split(/,/);
+            parts = segment.split(/,/); // break on commas
             items[index] = {
-              value: sections[0],
-              proportion: (parseInt(sections[1]) || 1),
-              duration: (parseInt(sections[2]) || 1)
-            }
+              value: parts[0],
+              parts: parts
+            };
+            for(var i = MSTRNSCRB.extensions.length - 1; i >= 0; i--) {
+              items[index] = MSTRNSCRB.extensions[i].parser(items[index]);
+            };
+            // var sections = segment.split(/,/);
+            // items[index] = {
+            //   value: sections[0],
+            //   proportion: (parseInt(sections[1]) || 1),
+            //   duration: (parseInt(sections[2]) || 1)
+            // }
           });
 
           // set up the span
           var id = 'mstrnscrb-' + ++counter;
           var span = '<span id="' + id + '">' + items[0].value + '</span>'; 
-        
+
           newhtml += span;
-          MSTRNSCRB.transformers[id] = items;
+          MSTRNSCRB.transformers[id] = {items: items};
           lastIndex = regex.lastIndex;
         }
-      
+
         newhtml += html.substring(lastIndex); // tack on the end
         $(this).html(newhtml);
       });
@@ -85,16 +102,23 @@
       }
       
       MSTRNSCRB.setIntervalId = setInterval(function() {
-        $.each(MSTRNSCRB.transformers, function(index, items) {
-          var total = _.reduce(items, function(memo, item){ return memo + item.proportion; }, 0);
-          var pick = Math.random() * total;
-          var last = 0;
+        $.each(MSTRNSCRB.transformers, function(index, transformer) {
+          // var total = _.reduce(items, function(memo, item){ return memo + item.proportion; }, 0);
+          // var pick = Math.random() * total;
+          // var last = 0;
+          // var pickitem;
+          // $.each(items, function(i, item) {
+          //   if(pick < (item.proportion + last)) {pickitem = item; return false;}
+          //   last += item.proportion;
+          // });
+          // $('#' + index).html(pickitem.value);
+          
           var pickitem;
-          $.each(items, function(i, item) {
-            if(pick < (item.proportion + last)) {pickitem = item; return false;}
-            last += item.proportion;
-          });
-
+          for(var i = MSTRNSCRB.extensions.length - 1; i >= 0; i--) {
+            if(pickitem = MSTRNSCRB.extensions[i].picker(transformer.items)) {i = -1;} // stop at the first match
+          };
+          
+          MSTRNSCRB.transformers[index].current = pickitem.value;
           $('#' + index).html(pickitem.value);
         });
       }, settings.basetime);
@@ -105,9 +129,9 @@
       clearInterval(MSTRNSCRB.setIntervalId);
     },
     
-    // extend adds a new parser/picker to the mistranscriber
+    // extend adds a new preambler/parser/picker to the mistranscriber
     extend: function(object) {
-      if(!object || !object.keyword || !object.parser || !object.picker) {
+      if(!object || !object.keyword || !object.preambler || !object.parser || !object.picker) {
         $.error('That is not a valid mistranscribe extension');
       }
       
@@ -116,11 +140,13 @@
     },
     
     // remove an extension
-    distend: function(keyword) {
+    unextend: function(keyword) {
       MSTRNSCRB.extensions = _.reject(MSTRNSCRB.extensions, function(extension){ return extension.keyword == keyword; });
     }
   }
   
+  
+  // main plugin
   $.fn.mistranscribe = function(method) {
     if (methods[method]) {
       return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
@@ -135,11 +161,14 @@
   // add the basic functionality
   $.fn.mistranscribe('extend', {
     keyword: 'basic',
-    parser: function(string) {
-      return {value: string, string: ''}; // eat the remaining string
+    preambler: function(preamble) {
+      return false; // do nothing
+    },
+    parser: function(item) {
+      return item; // send it back as-is
     },
     picker: function(items) {
-      return items[Math.round(Math.random() * (items.length - 1))];
+      return items[Math.round(Math.random() * (items.length - 1))]; // pick a random item
     }
   });
   
@@ -147,7 +176,18 @@
   // Add some extra extensions for flavor and awesome
   // A note about extensions: they run in reverse of the order they are added, which can cause some spectacular conflicts. Be wary of anyone hawking magical extension-conflict-resolving extensions: they never actually work, and typically just end up conflicting with each other. 
   
-  
+  $.fn.mistranscribe('extend', {
+    keyword: 'ratio',
+    preambler: function(preamble) {
+      return false; // do nothing
+    },
+    parser: function(item) {
+      return item; // send it back as-is
+    },
+    picker: function(items) {
+      return items[Math.round(Math.random() * (items.length - 1))]; // pick a random item
+    }
+  });
   
   
 })(jQuery);
