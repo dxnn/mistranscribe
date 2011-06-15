@@ -52,29 +52,37 @@
             for (var i = MSTRNSCRB.extensions.length - 1; i >= 0; i--){
               MSTRNSCRB.extensions[i].preambler(preamble);
             };
+            segments.shift().shift();
           }
 
-          // allow each extension in turn to parse each segment
-          $.each(segments, function(index, segment) {
-            parts = _.map(segment.split(/,/), function(val) {return val.split(/:/)}) // break on commas, then colons
+          // examine each remaining segment in turn
+          for (var index=0; index < segments.length; index++) {
+            // assemble the item
+            var parts = segments[index].split(/,/);
             items[index] = {
-              value: parts[0][0],
+              value: parts[0],
               parts: parts
             };
+            // handle segment params
+            if(parts.length > 1) {
+              for (var i=0; i < parts.length; i++) {
+                if(parts[i].indexOf(':')) {
+                  var key_value = parts[i].split(/:/);
+                  items[index][key_value[0]] = key_value[1];
+                } else {
+                  items[index][parts[i]] = true;
+                }
+              };
+            }
+            // allow each extension in turn to parse each segment
             for(var i = MSTRNSCRB.extensions.length - 1; i >= 0; i--) {
               items[index] = MSTRNSCRB.extensions[i].parser(items[index]);
             };
-            // var sections = segment.split(/,/);
-            // items[index] = {
-            //   value: sections[0],
-            //   proportion: (parseInt(sections[1]) || 1),
-            //   duration: (parseInt(sections[2]) || 1)
-            // }
-          });
+          };
 
           // set up the span
           var id = 'mstrnscrb-' + ++counter;
-          var span = '<span id="' + id + '">' + items[0].value + '</span>'; 
+          var span = '<span class="mstrnscrb" id="' + id + '">' + items[0].value + '</span>'; 
 
           newhtml += span;
           MSTRNSCRB.transformers[id] = {items: items};
