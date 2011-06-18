@@ -13,12 +13,85 @@
       font-family: monospace;
     }
   </style>
-  <script>
-    $(function() {$('#inside').mistranscribe() });
-  </script>
+  <script> 
+    $(function() {$('h1').mistranscribe()});
+  </script> 
 </head>
 
 <body>
+  <h1>Welcome to the {(home::keep:5,ratio:5|ham|homme)} of {(frolicking::keep:5|rollicking::keep:5|lollygagging::keep:5)} fun for your f{(a::keep:5,ratio:10|u|o)}ntastic text!</h1>
+
+  <p>mistranscribe.js mutablizes text. It's extensible (you can easily add more abilities to it). It's packaged as a jQuery plugin, because I like jQuery. It requires underscore.js because the code looks prettier that way. All the good bits are just plain old javascript though, so you shouldn't have any trouble porting it to the environment of your choice.</p>
+
+
+  <h2>Examples:</h2>
+
+  <h3>Simple usage</h3>
+
+  <div class="buttons">
+    <button onclick="$('#simple_stuff').mistranscribe(); $(this).hide().next().show().next().show();" value="activate">activate</button>
+    <button onclick="$('#simple_stuff').mistranscribe('stop')" value="activate" style="display:none">stop</button>
+    <button onclick="$('#simple_stuff').mistranscribe('start')" value="activate" style="display:none">start</button>
+  </div>
+  
+  <div id="simple_stuff">
+    <p>Basic: Thanks for letting me {(st|pl)}ay at your house. I really enjoyed your {(cat|cot)}.</p>
+
+    <p>Ratio: I {(one|two::ratio:2|three::ratio:3|four::ratio:4|five::ratio:5|six::ratio:6|seven::ratio:7|eight::ratio:8|)} the sandbox.</p>
+
+    <p>Linear: That is s{(name:oo, linear||o|oo|ooo|oooo|ooooo|oooooo|ooooooo)} co{(copy:oo||foo)}l.</p>
+
+    <p>Times (once): Soon this will {(times:1, linear||start|continue|stop)}.</p>
+    <p>Times (x3): I'm only going to tell you {( times: 3 , linear ||once|twice|thrice)}.</p>
+
+    <p>Keep: This will {(end soon::ratio:10|also end soon::ratio:10|end soon too::ratio:10|end soon as well::ratio:10|end nearly as soon::keep:2, ratio: 10|stay awhile::ratio:5,keep:5|last an extra extra extra long time::keep:10)}</p>
+  </div>
+  
+  
+
+  <h3>Named transcriptions</h3>
+  
+  <div class="buttons">
+    <button onclick="$('#named_stuff').mistranscribe(); $(this).hide().next().show().next().show();" value="activate">activate</button>
+    <button onclick="$('#named_stuff').mistranscribe('stop')" value="activate" style="display:none">stop</button>
+    <button onclick="$('#named_stuff').mistranscribe('start')" value="activate" style="display:none">start</button>
+  </div>
+  
+  <div id="named_stuff">
+    <p>
+      Follow:
+      <b>{(name:diddle,linear||Hey|The Cat|The Cow|The little Dog laughed|And the Dish)}</b>
+      <i>{(follow:diddle||diddle diddle|and the fiddle|jumped over the moon|to see such a sport|ran away with the Spoon)}</i>
+    </p>
+    <p>
+      Follow: For a time he rejected {(name:reject||humans|humanoids|hummus)} and loved only {(follow:reject||machines|machinima|matcha)}
+    </p>
+    <p>Copy + linear: That is s{(name:oo, linear||o|oo|ooo|oooo|ooooo|oooooo|ooooooo)} co{(copy:oo||foo)}l.</p>    
+  </div>
+
+
+
+
+  <h3>Morph</h3>
+  
+  <div class="buttons">
+    <button onclick="$('#morph_stuff').mistranscribe(); $(this).hide().next().show().next().show();" value="activate">activate</button>
+    <button onclick="$('#morph_stuff').mistranscribe('stop')" value="activate" style="display:none">stop</button>
+    <button onclick="$('#morph_stuff').mistranscribe('start')" value="activate" style="display:none">start</button>
+  </div>
+  
+  <div id="morph_stuff">
+    <p>Tron bike: {(morph||o=o|. . . . . . . . . . . . . . . . . . . . . . . . . o=o)}</p>
+
+    <p>Morph test: {(morph||forward|forward we march|march|backward march|ward|this ward is keen)}</p>
+    
+    <p>Morph typing: {(morph||M|My name is mistranscri|My name is|My name isn't mis|My name is|My name is not mi|My name is|My name is okay I give up||)}</p>
+  </div>
+  
+  
+  <!-- TODO: decorations, ascii morphs, license, [self-]amusement, better writer [no]  -->
+
+  
   <div id="inside">
   </div>
   
@@ -28,10 +101,6 @@
     <button onclick="$('#inside').mistranscribe('stop')" value="STOP!">STOP!</button>
   
     <textarea name="mister_nascar_ebb" id="mister_nascar_ebb">
-      <h1>Welcome to the {(home|tome|hymn)} of the javascript library of {(frolicking|rollicking)} fun for your f{(a|u|o)}ntastic text!</h1>
-  
-      <p>mistranscribe.js mutablizes text. It's extensible (you can easily add more abilities to it). It's packaged as a jQuery plugin, because I like jQuery. It requires underscore.js because the code looks prettier that way. Having said that it's mostly just plain old javascript, so you shouldn't have any trouble porting it to the environment of your choice.</p>
-  
       <p>Have you ever found yourself writing an email and got stuck because two or three different words would work? Now you can use them all.</p>
   
       <p>Have you ever looked over a sentence and realized that if you change a vowel or two you could make a different word that would also work in that context? Now you have it all.</p>
@@ -39,45 +108,6 @@
       <p>For years computer savvy types have written messages to each other like "Want to go to the (arcade|theater|hackfest)?" Anyone comfortable with regular expressions will read that single parenthetical expression as a list of options compressed in space.</p>
   
       <p>Another classic is blah blah bl{(a|o)}h. Here we see the beginning of {(meta|meat)}words -- words that exist as a superimposition of states in the readers mind. Combine a few metawords in a single sentence and watch the combinatorial(ly) (head) explosion(ing) driven hilarity ensue.</p>
-  
-      <h2>Examples:</h2>
-  
-      <p>Basic usage: Thanks for letting me {(st|pl)}ay at your house. I really enjoyed your {(cat|cot)}.</p>
-  
-      <p>Ratio: I {(one|two::ratio:2|three::ratio:3|four::ratio:4|five::ratio:5|six::ratio:6|seven::ratio:7|eight::ratio:8|)} the sandbox.</p>
-  
-      <p>Linear: That is s{(name:oo, linear||o|oo|ooo|oooo|ooooo|oooooo|ooooooo)} co{(copy:oo||foo)}l.</p>
-  
-      <p>Times (once): Soon this will {(times:1, linear||start|continue|stop)}.</p>
-      <p>Times (x3): I'm only going to tell you {( times: 3 , linear ||once|twice|thrice)}.</p>
-  
-      <p>Keep: This will {(end soon::ratio:10|also end soon::ratio:10|end soon too::ratio:10|end soon as well::ratio:10|end nearly as soon::keep:2, ratio: 10|stay awhile::ratio:5,keep:5|last an extra extra extra long time::keep:10)}</p>
-  
-      <h3>Name</h3>
-      <p>
-        Follow:
-        <b>{(name:diddle,linear||Hey|The Cat|The Cow|The little Dog laughed|And the Dish)}</b>
-        <i>{(follow:diddle||diddle diddle|and the fiddle|jumped over the moon|to see such a sport|ran away with the Spoon)}</i>
-      </p>
-      <p>
-        Follow: For a time he rejected {(name:reject||humans|humanoids|hummus)} and loved only {(follow:reject||machines|machinima|matcha)}
-      </p>
-      <p>Copy + linear: That is s{(name:oo, linear||o|oo|ooo|oooo|ooooo|oooooo|ooooooo)} co{(copy:oo||foo)}l.</p>
-  
-  
-      <p>Tron bike: {(morph||o=o|. . . . . . . . . . . . . . . . . . . . . . . . . o=o)}</p>
-
-      <p>Morph test: {(morph||forward|forward we march|march|backward march|ward|this ward is keen)}</p>
-  
-      <!-- Morph, can embed mistranscriptions inside others [no], metawords [meatwords], decorations, ascii morphs, license, [self-]amusement, better writer? [no], :: or ; or ...,  -->
-  
-      <p>Linear: {(linear||M|My|My n|My na|My nam|My name|My name i|My name is|My name is m|My name is|My name isn|My name isn't|My name is|My name is n|My name is no|My name is not|My name is no|My name is n|My name is|My name i|My name|My nam|My na|My n|My|M|||.|..|...|...|...|..|.||||My name is mistranscribed|||)}</p>
-  
-  
-  
-      <p>Hi there and stuff! We like to {(party::ratio:2|do things::ratio:13)}!</p>
-      <p>We like to {(read|eat::ratio:70)}!</p>
-      <p>We like to {(write::ratio:2,keep:10|make change::ratio:10,keep:2|have fun::ratio:10,keep:2|be cool::ratio:10,keep:2)}!</p>
     </textarea>
   
   
